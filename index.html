@@ -38,19 +38,82 @@
         #ui div {
             margin-bottom: 5px;
         }
-        #deathScreen {
+        #deathScreen, #classSelect {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.92);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #fff;
         }
+        #classSelect {
+            display: flex;
+        }
+        #classSelect h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #f1c40f;
+            text-shadow: 0 0 10px #f1c40f;
+        }
+        #classSelect p {
+            margin-bottom: 20px;
+            color: #aaa;
+        }
+        .classGrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 700px;
+        }
+        .classCard {
+            background: linear-gradient(135deg, #2d2d44 0%, #1a1a2e 100%);
+            border: 2px solid #4a4a6a;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            width: 200px;
+        }
+        .classCard:hover {
+            transform: translateY(-5px);
+            border-color: #f1c40f;
+            box-shadow: 0 5px 20px rgba(241, 196, 15, 0.3);
+        }
+        .classCard h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .classCard .classIcon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .classCard p {
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        .classCard .stats {
+            font-size: 10px;
+            color: #888;
+        }
+        .paladin { border-color: #f1c40f; }
+        .paladin h3 { color: #f1c40f; }
+        .necromancer { border-color: #9b59b6; }
+        .necromancer h3 { color: #9b59b6; }
+        .mage { border-color: #3498db; }
+        .mage h3 { color: #3498db; }
+        .priest { border-color: #2ecc71; }
+        .priest h3 { color: #2ecc71; }
+        .warrior { border-color: #e74c3c; }
+        .warrior h3 { color: #e74c3c; }
+        .ranger { border-color: #e67e22; }
+        .ranger h3 { color: #e67e22; }
         #deathScreen h1 {
             font-size: 48px;
             color: #e74c3c;
@@ -84,23 +147,105 @@
             font-size: 12px;
             pointer-events: none;
         }
+        #abilityUI {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #fff;
+            font-size: 14px;
+            text-align: right;
+            pointer-events: none;
+        }
+        #abilityUI .ability {
+            background: rgba(0,0,0,0.6);
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            border: 2px solid #4a4a6a;
+        }
+        #abilityUI .ability.ready {
+            border-color: #2ecc71;
+        }
+        #abilityUI .ability.cooldown {
+            border-color: #e74c3c;
+        }
+        #musicToggle {
+            position: absolute;
+            top: 10px;
+            right: 120px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #4a4a6a;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        #musicToggle:hover {
+            background: rgba(50,50,80,0.8);
+        }
     </style>
 </head>
 <body>
     <div id="gameContainer">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="ui">
+            <div id="classDisplay">Class: -</div>
             <div id="hpDisplay">HP: 100/100</div>
             <div id="levelDisplay">Level: 1</div>
             <div id="xpDisplay">XP: 0/100</div>
             <div id="statsDisplay">ATK: 10 | SPD: 3</div>
+        </div>
+        <button id="musicToggle">Music: ON</button>
+        <div id="abilityUI"></div>
+        <div id="classSelect">
+            <h1>Choose Your Class</h1>
+            <p>Each class has unique abilities and playstyles</p>
+            <div class="classGrid">
+                <div class="classCard paladin" data-class="paladin">
+                    <div class="classIcon">&#9876;</div>
+                    <h3>Paladin</h3>
+                    <p>Holy warrior with balanced stats. Divine Smite deals bonus damage and heals.</p>
+                    <div class="stats">HP: 120 | ATK: 12 | SPD: 2.8</div>
+                </div>
+                <div class="classCard necromancer" data-class="necromancer">
+                    <div class="classIcon">&#9760;</div>
+                    <h3>Necromancer</h3>
+                    <p>Dark sorcerer who summons skeleton minions to fight. Life steal on attacks.</p>
+                    <div class="stats">HP: 80 | ATK: 8 | SPD: 2.5</div>
+                </div>
+                <div class="classCard mage" data-class="mage">
+                    <div class="classIcon">&#10038;</div>
+                    <h3>Mage</h3>
+                    <p>Powerful spellcaster with ranged fireballs. High damage, low survivability.</p>
+                    <div class="stats">HP: 70 | ATK: 18 | SPD: 2.8</div>
+                </div>
+                <div class="classCard priest" data-class="priest">
+                    <div class="classIcon">&#10013;</div>
+                    <h3>Priest</h3>
+                    <p>Holy healer with healing aura. Smite ability damages and stuns enemies.</p>
+                    <div class="stats">HP: 90 | ATK: 8 | SPD: 2.8</div>
+                </div>
+                <div class="classCard warrior" data-class="warrior">
+                    <div class="classIcon">&#9881;</div>
+                    <h3>Warrior</h3>
+                    <p>Tank with massive HP. Shield Charge stuns enemies and blocks damage.</p>
+                    <div class="stats">HP: 150 | ATK: 14 | SPD: 2.5</div>
+                </div>
+                <div class="classCard ranger" data-class="ranger">
+                    <div class="classIcon">&#127993;</div>
+                    <h3>Ranger</h3>
+                    <p>Swift archer with ranged arrows. Multi-shot fires arrows in a spread.</p>
+                    <div class="stats">HP: 85 | ATK: 11 | SPD: 3.5</div>
+                </div>
+            </div>
         </div>
         <div id="deathScreen">
             <h1>YOU DIED</h1>
             <p id="deathStats">Level 1 | Enemies Defeated: 0</p>
             <button id="restartBtn">Restart Game</button>
         </div>
-        <div id="instructions">WASD: Move | Left Click: Attack | Collect loot by walking over it</div>
+        <div id="instructions">WASD: Move | Left Click: Attack | Space: Special Ability</div>
     </div>
 
     <script>
@@ -110,14 +255,523 @@
         const WIDTH = 800;
         const HEIGHT = 600;
 
+        // Audio Context for procedural music
+        let audioCtx = null;
+        let musicEnabled = true;
+        let currentMusicNodes = [];
+
+        // Music themes for each room
+        const roomThemes = {
+            0: { // Starting room - mysterious, calm
+                scale: [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88], // C major
+                tempo: 400,
+                style: 'ambient',
+                baseFreq: 130.81
+            },
+            1: { // Eastern room - tense, action
+                scale: [293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25], // D dorian
+                tempo: 300,
+                style: 'action',
+                baseFreq: 146.83
+            },
+            2: { // Southern room - dark, ominous
+                scale: [220.00, 246.94, 261.63, 293.66, 329.63, 349.23, 392.00], // A minor
+                tempo: 500,
+                style: 'dark',
+                baseFreq: 110.00
+            },
+            3: { // Boss room - intense, epic
+                scale: [196.00, 220.00, 246.94, 261.63, 293.66, 329.63, 349.23], // G minor
+                tempo: 250,
+                style: 'epic',
+                baseFreq: 98.00
+            }
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function stopMusic() {
+            currentMusicNodes.forEach(node => {
+                try {
+                    node.stop();
+                    node.disconnect();
+                } catch(e) {}
+            });
+            currentMusicNodes = [];
+        }
+
+        function playRoomMusic(roomId) {
+            if (!musicEnabled || !audioCtx) return;
+
+            stopMusic();
+
+            const theme = roomThemes[roomId];
+            if (!theme) return;
+
+            // Create master gain
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.15;
+            masterGain.connect(audioCtx.destination);
+
+            // Bass drone
+            const bassOsc = audioCtx.createOscillator();
+            const bassGain = audioCtx.createGain();
+            bassOsc.type = 'sine';
+            bassOsc.frequency.value = theme.baseFreq;
+            bassGain.gain.value = 0.3;
+            bassOsc.connect(bassGain);
+            bassGain.connect(masterGain);
+            bassOsc.start();
+            currentMusicNodes.push(bassOsc);
+
+            // Melody pattern
+            let noteIndex = 0;
+            const playNote = () => {
+                if (!musicEnabled) return;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                filter.type = 'lowpass';
+                filter.frequency.value = 800;
+
+                osc.type = theme.style === 'dark' ? 'sawtooth' : theme.style === 'epic' ? 'square' : 'triangle';
+                osc.frequency.value = theme.scale[noteIndex % theme.scale.length];
+
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(masterGain);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+
+                noteIndex++;
+                if (theme.style === 'action' || theme.style === 'epic') {
+                    noteIndex += Math.floor(Math.random() * 2);
+                }
+
+                if (musicEnabled && !gameOver) {
+                    setTimeout(playNote, theme.tempo + Math.random() * 100);
+                }
+            };
+
+            // Percussion for action/epic themes
+            if (theme.style === 'action' || theme.style === 'epic') {
+                const playDrum = () => {
+                    if (!musicEnabled || gameOver) return;
+
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.1);
+
+                    gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.15);
+
+                    setTimeout(playDrum, theme.tempo * 2);
+                };
+                setTimeout(playDrum, theme.tempo);
+            }
+
+            // Ambient pad for calm/dark themes
+            if (theme.style === 'ambient' || theme.style === 'dark') {
+                const pad = audioCtx.createOscillator();
+                const padGain = audioCtx.createGain();
+                const padFilter = audioCtx.createBiquadFilter();
+
+                pad.type = 'sine';
+                pad.frequency.value = theme.scale[2];
+                padFilter.type = 'lowpass';
+                padFilter.frequency.value = 400;
+                padGain.gain.value = 0.1;
+
+                pad.connect(padFilter);
+                padFilter.connect(padGain);
+                padGain.connect(masterGain);
+                pad.start();
+                currentMusicNodes.push(pad);
+
+                // Slowly modulate frequency
+                const modulatePad = () => {
+                    if (!musicEnabled || gameOver) return;
+                    const newFreq = theme.scale[Math.floor(Math.random() * theme.scale.length)] / 2;
+                    pad.frequency.exponentialRampToValueAtTime(newFreq, audioCtx.currentTime + 2);
+                    setTimeout(modulatePad, 3000);
+                };
+                setTimeout(modulatePad, 2000);
+            }
+
+            setTimeout(playNote, 500);
+        }
+
+        // Toggle music
+        document.getElementById('musicToggle').addEventListener('click', () => {
+            musicEnabled = !musicEnabled;
+            document.getElementById('musicToggle').textContent = `Music: ${musicEnabled ? 'ON' : 'OFF'}`;
+            if (musicEnabled) {
+                initAudio();
+                playRoomMusic(currentRoom);
+            } else {
+                stopMusic();
+            }
+        });
+
+        // Class definitions
+        const classes = {
+            paladin: {
+                name: 'Paladin',
+                color: '#f1c40f',
+                hp: 120,
+                attack: 12,
+                speed: 2.8,
+                attackRange: 55,
+                attackArc: Math.PI / 2,
+                isRanged: false,
+                ability: {
+                    name: 'Divine Smite',
+                    cooldown: 180,
+                    description: 'Holy strike that deals 2x damage and heals for damage dealt',
+                    execute: (player, enemies, mouseX, mouseY) => {
+                        player.isAttacking = true;
+                        player.attackTimer = 20;
+                        player.attackAngle = Math.atan2(mouseY - player.y, mouseX - player.x);
+
+                        // Holy particles
+                        for (let i = 0; i < 15; i++) {
+                            particles.push({
+                                x: player.x,
+                                y: player.y,
+                                vx: Math.cos(player.attackAngle + (Math.random() - 0.5)) * 5,
+                                vy: Math.sin(player.attackAngle + (Math.random() - 0.5)) * 5,
+                                life: 30,
+                                color: '#f1c40f'
+                            });
+                        }
+
+                        enemies.forEach(enemy => {
+                            const dist = Math.hypot(enemy.x - player.x, enemy.y - player.y);
+                            if (dist <= player.attackRange + 20 + enemy.size) {
+                                const angleToEnemy = Math.atan2(enemy.y - player.y, enemy.x - player.x);
+                                let angleDiff = angleToEnemy - player.attackAngle;
+                                while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+                                while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+
+                                if (Math.abs(angleDiff) <= player.attackArc / 2) {
+                                    const damage = player.attack * 2 + Math.floor(Math.random() * 10);
+                                    enemy.hp -= damage;
+                                    enemy.hitFlash = 15;
+
+                                    // Heal player
+                                    const healAmount = Math.floor(damage * 0.5);
+                                    player.hp = Math.min(player.hp + healAmount, player.maxHp);
+
+                                    damageNumbers.push({
+                                        x: enemy.x,
+                                        y: enemy.y - enemy.size,
+                                        value: damage,
+                                        color: '#f1c40f',
+                                        life: 60
+                                    });
+
+                                    damageNumbers.push({
+                                        x: player.x,
+                                        y: player.y - 40,
+                                        value: '+' + healAmount + ' HP',
+                                        color: '#2ecc71',
+                                        life: 60
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            },
+            necromancer: {
+                name: 'Necromancer',
+                color: '#9b59b6',
+                hp: 80,
+                attack: 8,
+                speed: 2.5,
+                attackRange: 45,
+                attackArc: Math.PI / 2,
+                isRanged: false,
+                lifeSteal: 0.2,
+                ability: {
+                    name: 'Raise Dead',
+                    cooldown: 300,
+                    description: 'Summon 3 skeleton minions that fight for you',
+                    execute: (player, enemies) => {
+                        for (let i = 0; i < 3; i++) {
+                            const angle = (Math.PI * 2 / 3) * i;
+                            minions.push({
+                                x: player.x + Math.cos(angle) * 40,
+                                y: player.y + Math.sin(angle) * 40,
+                                size: 15,
+                                hp: 30,
+                                maxHp: 30,
+                                attack: 5,
+                                speed: 2,
+                                color: '#bdc3c7',
+                                attackTimer: 0,
+                                attackCooldown: 45,
+                                lifetime: 600 // 10 seconds
+                            });
+
+                            // Summon particles
+                            for (let j = 0; j < 8; j++) {
+                                particles.push({
+                                    x: player.x + Math.cos(angle) * 40,
+                                    y: player.y + Math.sin(angle) * 40,
+                                    vx: (Math.random() - 0.5) * 3,
+                                    vy: -Math.random() * 3,
+                                    life: 25,
+                                    color: '#9b59b6'
+                                });
+                            }
+                        }
+                    }
+                }
+            },
+            mage: {
+                name: 'Mage',
+                color: '#3498db',
+                hp: 70,
+                attack: 18,
+                speed: 2.8,
+                attackRange: 200,
+                attackArc: Math.PI / 8,
+                isRanged: true,
+                ability: {
+                    name: 'Meteor Storm',
+                    cooldown: 360,
+                    description: 'Rain down meteors dealing massive AoE damage',
+                    execute: (player, enemies) => {
+                        const meteorCount = 5;
+                        for (let i = 0; i < meteorCount; i++) {
+                            setTimeout(() => {
+                                const x = 100 + Math.random() * (WIDTH - 200);
+                                const y = 100 + Math.random() * (HEIGHT - 200);
+
+                                // Meteor impact
+                                for (let j = 0; j < 20; j++) {
+                                    particles.push({
+                                        x: x,
+                                        y: y,
+                                        vx: (Math.random() - 0.5) * 8,
+                                        vy: (Math.random() - 0.5) * 8,
+                                        life: 30,
+                                        color: Math.random() > 0.5 ? '#e74c3c' : '#f39c12'
+                                    });
+                                }
+
+                                // Damage enemies in radius
+                                enemies.forEach(enemy => {
+                                    const dist = Math.hypot(enemy.x - x, enemy.y - y);
+                                    if (dist < 80) {
+                                        const damage = player.attack + 10 + Math.floor(Math.random() * 10);
+                                        enemy.hp -= damage;
+                                        enemy.hitFlash = 10;
+                                        damageNumbers.push({
+                                            x: enemy.x,
+                                            y: enemy.y - enemy.size,
+                                            value: damage,
+                                            color: '#e74c3c',
+                                            life: 60
+                                        });
+                                    }
+                                });
+                            }, i * 200);
+                        }
+                    }
+                }
+            },
+            priest: {
+                name: 'Priest',
+                color: '#2ecc71',
+                hp: 90,
+                attack: 8,
+                speed: 2.8,
+                attackRange: 50,
+                attackArc: Math.PI / 2,
+                isRanged: false,
+                healingAura: true,
+                ability: {
+                    name: 'Holy Nova',
+                    cooldown: 240,
+                    description: 'Blast of holy energy that damages and stuns all nearby enemies',
+                    execute: (player, enemies) => {
+                        const radius = 150;
+
+                        // Holy nova visual
+                        for (let i = 0; i < 30; i++) {
+                            const angle = (Math.PI * 2 / 30) * i;
+                            particles.push({
+                                x: player.x,
+                                y: player.y,
+                                vx: Math.cos(angle) * 6,
+                                vy: Math.sin(angle) * 6,
+                                life: 25,
+                                color: '#2ecc71'
+                            });
+                        }
+
+                        enemies.forEach(enemy => {
+                            const dist = Math.hypot(enemy.x - player.x, enemy.y - player.y);
+                            if (dist < radius) {
+                                const damage = player.attack + 5;
+                                enemy.hp -= damage;
+                                enemy.hitFlash = 10;
+                                enemy.stunned = 90; // 1.5 second stun
+
+                                damageNumbers.push({
+                                    x: enemy.x,
+                                    y: enemy.y - enemy.size,
+                                    value: damage,
+                                    color: '#2ecc71',
+                                    life: 60
+                                });
+                            }
+                        });
+
+                        // Also heal player
+                        const healAmount = 20;
+                        player.hp = Math.min(player.hp + healAmount, player.maxHp);
+                        damageNumbers.push({
+                            x: player.x,
+                            y: player.y - 40,
+                            value: '+' + healAmount + ' HP',
+                            color: '#2ecc71',
+                            life: 60
+                        });
+                    }
+                }
+            },
+            warrior: {
+                name: 'Warrior',
+                color: '#e74c3c',
+                hp: 150,
+                attack: 14,
+                speed: 2.5,
+                attackRange: 60,
+                attackArc: Math.PI * 0.6,
+                isRanged: false,
+                ability: {
+                    name: 'Shield Charge',
+                    cooldown: 150,
+                    description: 'Charge forward, stunning enemies and gaining shield',
+                    execute: (player, enemies, mouseX, mouseY) => {
+                        const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+                        const chargeDistance = 150;
+
+                        // Charge particles
+                        for (let i = 0; i < 10; i++) {
+                            particles.push({
+                                x: player.x,
+                                y: player.y,
+                                vx: -Math.cos(angle) * 3 + (Math.random() - 0.5) * 2,
+                                vy: -Math.sin(angle) * 3 + (Math.random() - 0.5) * 2,
+                                life: 20,
+                                color: '#e74c3c'
+                            });
+                        }
+
+                        // Move player
+                        player.x += Math.cos(angle) * chargeDistance;
+                        player.y += Math.sin(angle) * chargeDistance;
+
+                        // Keep in bounds
+                        player.x = Math.max(player.size, Math.min(WIDTH - player.size, player.x));
+                        player.y = Math.max(player.size, Math.min(HEIGHT - player.size, player.y));
+
+                        // Damage and stun enemies in path
+                        enemies.forEach(enemy => {
+                            const dist = Math.hypot(enemy.x - player.x, enemy.y - player.y);
+                            if (dist < 60) {
+                                const damage = player.attack + 10;
+                                enemy.hp -= damage;
+                                enemy.hitFlash = 10;
+                                enemy.stunned = 60;
+
+                                damageNumbers.push({
+                                    x: enemy.x,
+                                    y: enemy.y - enemy.size,
+                                    value: damage,
+                                    color: '#e74c3c',
+                                    life: 60
+                                });
+                            }
+                        });
+
+                        // Gain shield
+                        player.shield = 30;
+                        player.shieldTimer = 180;
+                    }
+                }
+            },
+            ranger: {
+                name: 'Ranger',
+                color: '#e67e22',
+                hp: 85,
+                attack: 11,
+                speed: 3.5,
+                attackRange: 250,
+                attackArc: Math.PI / 10,
+                isRanged: true,
+                ability: {
+                    name: 'Multi-Shot',
+                    cooldown: 120,
+                    description: 'Fire 5 arrows in a spread pattern',
+                    execute: (player, enemies, mouseX, mouseY) => {
+                        const baseAngle = Math.atan2(mouseY - player.y, mouseX - player.x);
+                        const spreadAngles = [-0.4, -0.2, 0, 0.2, 0.4];
+
+                        spreadAngles.forEach(spread => {
+                            const angle = baseAngle + spread;
+                            projectiles.push({
+                                x: player.x,
+                                y: player.y,
+                                vx: Math.cos(angle) * 10,
+                                vy: Math.sin(angle) * 10,
+                                damage: player.attack,
+                                size: 6,
+                                color: '#e67e22',
+                                piercing: false
+                            });
+                        });
+                    }
+                }
+            }
+        };
+
         // Game state
         let gameOver = false;
+        let gameStarted = false;
         let enemiesDefeated = 0;
         let mouseX = 0;
         let mouseY = 0;
         let keys = {};
+        let selectedClass = null;
 
-        // Dungeon layout - 4 connected rooms
+        // Dungeon layout
         const ROOM_WIDTH = 800;
         const ROOM_HEIGHT = 600;
         const rooms = [
@@ -128,14 +782,7 @@
         ];
         let currentRoom = 0;
 
-        // Doorways
         const DOOR_SIZE = 80;
-        const doorways = {
-            right: { x: WIDTH - 20, y: HEIGHT/2 - DOOR_SIZE/2, w: 40, h: DOOR_SIZE },
-            left: { x: -20, y: HEIGHT/2 - DOOR_SIZE/2, w: 40, h: DOOR_SIZE },
-            bottom: { x: WIDTH/2 - DOOR_SIZE/2, y: HEIGHT - 20, w: DOOR_SIZE, h: 40 },
-            top: { x: WIDTH/2 - DOOR_SIZE/2, y: -20, w: DOOR_SIZE, h: 40 }
-        };
 
         // Player
         const player = {
@@ -155,9 +802,15 @@
             attackDuration: 15,
             attackCooldown: 0,
             attackRange: 50,
-            attackArc: Math.PI / 2, // 90 degree arc
+            attackArc: Math.PI / 2,
             color: '#3498db',
-            invulnerable: 0
+            invulnerable: 0,
+            isRanged: false,
+            abilityCooldown: 0,
+            shield: 0,
+            shieldTimer: 0,
+            lifeSteal: 0,
+            healingAura: false
         };
 
         // Enemy types
@@ -198,6 +851,8 @@
         };
 
         let enemies = [];
+        let minions = [];
+        let projectiles = [];
         let loot = [];
         let damageNumbers = [];
         let particles = [];
@@ -209,17 +864,67 @@
             speedBoost: { color: '#3498db', symbol: 'S', effect: (p) => { p.speed += 0.3; } }
         };
 
-        // Initialize enemies for a room
+        // Class selection
+        document.querySelectorAll('.classCard').forEach(card => {
+            card.addEventListener('click', () => {
+                const className = card.dataset.class;
+                selectClass(className);
+            });
+        });
+
+        function selectClass(className) {
+            selectedClass = className;
+            const classData = classes[className];
+
+            // Apply class stats
+            player.hp = classData.hp;
+            player.maxHp = classData.hp;
+            player.attack = classData.attack;
+            player.speed = classData.speed;
+            player.color = classData.color;
+            player.attackRange = classData.attackRange;
+            player.attackArc = classData.attackArc;
+            player.isRanged = classData.isRanged;
+            player.lifeSteal = classData.lifeSteal || 0;
+            player.healingAura = classData.healingAura || false;
+            player.ability = classData.ability;
+            player.abilityCooldown = 0;
+
+            document.getElementById('classSelect').style.display = 'none';
+            document.getElementById('classDisplay').textContent = `Class: ${classData.name}`;
+
+            updateAbilityUI();
+            gameStarted = true;
+
+            // Initialize audio and start music
+            initAudio();
+            playRoomMusic(currentRoom);
+
+            spawnEnemies();
+        }
+
+        function updateAbilityUI() {
+            if (!player.ability) return;
+            const abilityUI = document.getElementById('abilityUI');
+            const ready = player.abilityCooldown <= 0;
+            const cooldownText = ready ? 'READY' : `${Math.ceil(player.abilityCooldown / 60)}s`;
+            abilityUI.innerHTML = `
+                <div class="ability ${ready ? 'ready' : 'cooldown'}">
+                    <strong>[SPACE] ${player.ability.name}</strong><br>
+                    <small>${cooldownText}</small>
+                </div>
+            `;
+        }
+
         function spawnEnemies() {
             enemies = [];
-            const numEnemies = 3 + Math.floor(player.level / 2);
+            const numEnemies = 3 + Math.floor(player.level / 2) + currentRoom;
             const types = ['grunt', 'brute', 'speeder'];
 
             for (let i = 0; i < numEnemies; i++) {
                 const type = types[Math.floor(Math.random() * types.length)];
                 const template = enemyTypes[type];
 
-                // Spawn away from player and doors
                 let x, y, valid;
                 do {
                     x = 100 + Math.random() * (WIDTH - 200);
@@ -231,18 +936,26 @@
                 enemies.push({
                     x, y,
                     ...template,
-                    maxHp: template.hp,
+                    maxHp: template.hp + (player.level - 1) * 5,
+                    hp: template.hp + (player.level - 1) * 5,
                     type,
                     state: 'patrol',
                     patrolTarget: { x: Math.random() * WIDTH, y: Math.random() * HEIGHT },
                     attackTimer: 0,
-                    hitFlash: 0
+                    hitFlash: 0,
+                    stunned: 0
                 });
             }
         }
 
         // Input handling
-        document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
+        document.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            if (e.code === 'Space' && gameStarted && !gameOver) {
+                e.preventDefault();
+                useAbility();
+            }
+        });
         document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
         canvas.addEventListener('mousemove', (e) => {
             const rect = canvas.getBoundingClientRect();
@@ -250,13 +963,39 @@
             mouseY = e.clientY - rect.top;
         });
         canvas.addEventListener('click', () => {
-            if (!gameOver && player.attackCooldown <= 0) {
-                player.isAttacking = true;
-                player.attackTimer = player.attackDuration;
-                player.attackAngle = Math.atan2(mouseY - player.y, mouseX - player.x);
-                player.attackCooldown = 25;
+            if (!gameStarted || gameOver) return;
+            if (player.attackCooldown <= 0) {
+                performAttack();
+            }
+        });
 
-                // Check for hits
+        function useAbility() {
+            if (!player.ability || player.abilityCooldown > 0) return;
+            player.ability.execute(player, enemies, mouseX, mouseY);
+            player.abilityCooldown = player.ability.cooldown;
+            updateAbilityUI();
+        }
+
+        function performAttack() {
+            player.isAttacking = true;
+            player.attackTimer = player.attackDuration;
+            player.attackAngle = Math.atan2(mouseY - player.y, mouseX - player.x);
+            player.attackCooldown = player.isRanged ? 20 : 25;
+
+            if (player.isRanged) {
+                // Fire projectile
+                projectiles.push({
+                    x: player.x,
+                    y: player.y,
+                    vx: Math.cos(player.attackAngle) * 12,
+                    vy: Math.sin(player.attackAngle) * 12,
+                    damage: player.attack + Math.floor(Math.random() * 5),
+                    size: selectedClass === 'mage' ? 10 : 5,
+                    color: player.color,
+                    piercing: false
+                });
+            } else {
+                // Melee attack
                 enemies.forEach(enemy => {
                     const dist = Math.hypot(enemy.x - player.x, enemy.y - player.y);
                     if (dist <= player.attackRange + enemy.size) {
@@ -271,12 +1010,16 @@
                             enemy.hitFlash = 10;
                             enemy.state = 'chase';
 
-                            // Knockback
+                            // Life steal
+                            if (player.lifeSteal > 0) {
+                                const healAmount = Math.floor(damage * player.lifeSteal);
+                                player.hp = Math.min(player.hp + healAmount, player.maxHp);
+                            }
+
                             const knockAngle = Math.atan2(enemy.y - player.y, enemy.x - player.x);
                             enemy.x += Math.cos(knockAngle) * 15;
                             enemy.y += Math.sin(knockAngle) * 15;
 
-                            // Damage number
                             damageNumbers.push({
                                 x: enemy.x,
                                 y: enemy.y - enemy.size,
@@ -285,7 +1028,6 @@
                                 life: 60
                             });
 
-                            // Particles
                             for (let i = 0; i < 5; i++) {
                                 particles.push({
                                     x: enemy.x,
@@ -300,43 +1042,48 @@
                     }
                 });
             }
-        });
+        }
 
         document.getElementById('restartBtn').addEventListener('click', restartGame);
 
         function restartGame() {
+            document.getElementById('deathScreen').style.display = 'none';
+            document.getElementById('classSelect').style.display = 'flex';
+
             player.x = WIDTH / 2;
             player.y = HEIGHT / 2;
-            player.hp = 100;
-            player.maxHp = 100;
-            player.attack = 10;
-            player.speed = 3;
             player.xp = 0;
             player.xpToLevel = 100;
             player.level = 1;
             player.isAttacking = false;
             player.attackCooldown = 0;
             player.invulnerable = 0;
+            player.abilityCooldown = 0;
+            player.shield = 0;
+            player.shieldTimer = 0;
             currentRoom = 0;
             enemiesDefeated = 0;
             gameOver = false;
+            gameStarted = false;
             loot = [];
             damageNumbers = [];
             particles = [];
-            document.getElementById('deathScreen').style.display = 'none';
-            spawnEnemies();
+            minions = [];
+            projectiles = [];
+            enemies = [];
+
+            stopMusic();
         }
 
         function levelUp() {
             player.level++;
             player.xp -= player.xpToLevel;
             player.xpToLevel = Math.floor(player.xpToLevel * 1.5);
-            player.maxHp += 20;
-            player.hp = player.maxHp; // Full restore
-            player.attack += 3;
-            player.speed += 0.2;
+            player.maxHp += 15;
+            player.hp = player.maxHp;
+            player.attack += 2;
+            player.speed += 0.15;
 
-            // Level up particles
             for (let i = 0; i < 20; i++) {
                 particles.push({
                     x: player.x,
@@ -358,7 +1105,7 @@
         }
 
         function update() {
-            if (gameOver) return;
+            if (!gameStarted || gameOver) return;
 
             // Player movement
             let dx = 0, dy = 0;
@@ -375,58 +1122,195 @@
                 player.y += dy * player.speed;
             }
 
-            // Keep player in bounds (but allow through doorways)
+            // Room transitions
             const margin = player.size;
-
-            // Check room transitions
             const room = rooms[currentRoom];
 
-            // Right door (to room on the right)
-            if (player.x > WIDTH - margin && room.connections.includes(currentRoom + 1) && rooms[currentRoom].x < rooms[currentRoom + 1]?.x) {
+            if (player.x > WIDTH - margin && room.connections.some(r => rooms[r].x > room.x)) {
                 if (player.y > HEIGHT/2 - DOOR_SIZE/2 && player.y < HEIGHT/2 + DOOR_SIZE/2) {
-                    currentRoom = room.connections.find(r => rooms[r].x > room.x) || currentRoom;
-                    player.x = margin + 30;
-                    spawnEnemies();
+                    const newRoom = room.connections.find(r => rooms[r].x > room.x);
+                    if (newRoom !== undefined) {
+                        currentRoom = newRoom;
+                        player.x = margin + 30;
+                        spawnEnemies();
+                        minions = [];
+                        playRoomMusic(currentRoom);
+                    }
                 }
             }
-            // Left door
             if (player.x < margin && room.connections.some(r => rooms[r].x < room.x)) {
                 if (player.y > HEIGHT/2 - DOOR_SIZE/2 && player.y < HEIGHT/2 + DOOR_SIZE/2) {
-                    currentRoom = room.connections.find(r => rooms[r].x < room.x) ?? currentRoom;
-                    player.x = WIDTH - margin - 30;
-                    spawnEnemies();
+                    const newRoom = room.connections.find(r => rooms[r].x < room.x);
+                    if (newRoom !== undefined) {
+                        currentRoom = newRoom;
+                        player.x = WIDTH - margin - 30;
+                        spawnEnemies();
+                        minions = [];
+                        playRoomMusic(currentRoom);
+                    }
                 }
             }
-            // Bottom door
             if (player.y > HEIGHT - margin && room.connections.some(r => rooms[r].y > room.y)) {
                 if (player.x > WIDTH/2 - DOOR_SIZE/2 && player.x < WIDTH/2 + DOOR_SIZE/2) {
-                    currentRoom = room.connections.find(r => rooms[r].y > room.y) ?? currentRoom;
-                    player.y = margin + 30;
-                    spawnEnemies();
+                    const newRoom = room.connections.find(r => rooms[r].y > room.y);
+                    if (newRoom !== undefined) {
+                        currentRoom = newRoom;
+                        player.y = margin + 30;
+                        spawnEnemies();
+                        minions = [];
+                        playRoomMusic(currentRoom);
+                    }
                 }
             }
-            // Top door
             if (player.y < margin && room.connections.some(r => rooms[r].y < room.y)) {
                 if (player.x > WIDTH/2 - DOOR_SIZE/2 && player.x < WIDTH/2 + DOOR_SIZE/2) {
-                    currentRoom = room.connections.find(r => rooms[r].y < room.y) ?? currentRoom;
-                    player.y = HEIGHT - margin - 30;
-                    spawnEnemies();
+                    const newRoom = room.connections.find(r => rooms[r].y < room.y);
+                    if (newRoom !== undefined) {
+                        currentRoom = newRoom;
+                        player.y = HEIGHT - margin - 30;
+                        spawnEnemies();
+                        minions = [];
+                        playRoomMusic(currentRoom);
+                    }
                 }
             }
 
-            // Clamp to room bounds
             player.x = Math.max(margin, Math.min(WIDTH - margin, player.x));
             player.y = Math.max(margin, Math.min(HEIGHT - margin, player.y));
 
-            // Attack timer
+            // Timers
             if (player.attackTimer > 0) player.attackTimer--;
             if (player.attackCooldown > 0) player.attackCooldown--;
             if (player.invulnerable > 0) player.invulnerable--;
+            if (player.abilityCooldown > 0) {
+                player.abilityCooldown--;
+                if (player.abilityCooldown % 60 === 0) updateAbilityUI();
+            }
+            if (player.shieldTimer > 0) {
+                player.shieldTimer--;
+                if (player.shieldTimer <= 0) player.shield = 0;
+            }
             player.isAttacking = player.attackTimer > 0;
 
+            // Priest healing aura
+            if (player.healingAura && Math.random() < 0.02) {
+                player.hp = Math.min(player.hp + 1, player.maxHp);
+            }
+
+            // Update projectiles
+            projectiles = projectiles.filter(proj => {
+                proj.x += proj.vx;
+                proj.y += proj.vy;
+
+                // Check bounds
+                if (proj.x < 0 || proj.x > WIDTH || proj.y < 0 || proj.y > HEIGHT) {
+                    return false;
+                }
+
+                // Check enemy hits
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    const enemy = enemies[i];
+                    const dist = Math.hypot(proj.x - enemy.x, proj.y - enemy.y);
+                    if (dist < proj.size + enemy.size) {
+                        enemy.hp -= proj.damage;
+                        enemy.hitFlash = 10;
+                        enemy.state = 'chase';
+
+                        damageNumbers.push({
+                            x: enemy.x,
+                            y: enemy.y - enemy.size,
+                            value: proj.damage,
+                            color: '#fff',
+                            life: 60
+                        });
+
+                        for (let j = 0; j < 5; j++) {
+                            particles.push({
+                                x: proj.x,
+                                y: proj.y,
+                                vx: (Math.random() - 0.5) * 4,
+                                vy: (Math.random() - 0.5) * 4,
+                                life: 15,
+                                color: proj.color
+                            });
+                        }
+
+                        if (!proj.piercing) return false;
+                    }
+                }
+
+                return true;
+            });
+
+            // Update minions
+            minions = minions.filter(minion => {
+                minion.lifetime--;
+                if (minion.lifetime <= 0 || minion.hp <= 0) {
+                    for (let i = 0; i < 5; i++) {
+                        particles.push({
+                            x: minion.x,
+                            y: minion.y,
+                            vx: (Math.random() - 0.5) * 3,
+                            vy: -Math.random() * 3,
+                            life: 20,
+                            color: '#9b59b6'
+                        });
+                    }
+                    return false;
+                }
+
+                // Find nearest enemy
+                let nearestEnemy = null;
+                let nearestDist = Infinity;
+                enemies.forEach(enemy => {
+                    const dist = Math.hypot(enemy.x - minion.x, enemy.y - minion.y);
+                    if (dist < nearestDist) {
+                        nearestDist = dist;
+                        nearestEnemy = enemy;
+                    }
+                });
+
+                if (nearestEnemy) {
+                    const angle = Math.atan2(nearestEnemy.y - minion.y, nearestEnemy.x - minion.x);
+                    if (nearestDist > 25) {
+                        minion.x += Math.cos(angle) * minion.speed;
+                        minion.y += Math.sin(angle) * minion.speed;
+                    }
+
+                    // Attack
+                    if (minion.attackTimer > 0) minion.attackTimer--;
+                    if (nearestDist < 30 && minion.attackTimer <= 0) {
+                        nearestEnemy.hp -= minion.attack;
+                        nearestEnemy.hitFlash = 5;
+                        minion.attackTimer = minion.attackCooldown;
+
+                        damageNumbers.push({
+                            x: nearestEnemy.x,
+                            y: nearestEnemy.y - nearestEnemy.size,
+                            value: minion.attack,
+                            color: '#bdc3c7',
+                            life: 40
+                        });
+                    }
+                }
+
+                // Keep in bounds
+                minion.x = Math.max(minion.size, Math.min(WIDTH - minion.size, minion.x));
+                minion.y = Math.max(minion.size, Math.min(HEIGHT - minion.size, minion.y));
+
+                return true;
+            });
+
             // Update enemies
-            enemies.forEach((enemy, idx) => {
+            for (let idx = enemies.length - 1; idx >= 0; idx--) {
+                const enemy = enemies[idx];
                 const distToPlayer = Math.hypot(player.x - enemy.x, player.y - enemy.y);
+
+                // Stun timer
+                if (enemy.stunned > 0) {
+                    enemy.stunned--;
+                    continue;
+                }
 
                 // State machine
                 if (distToPlayer < enemy.chaseRange) {
@@ -448,7 +1332,6 @@
                     targetX = enemy.patrolTarget.x;
                     targetY = enemy.patrolTarget.y;
 
-                    // New patrol target if reached
                     if (Math.hypot(targetX - enemy.x, targetY - enemy.y) < 10) {
                         enemy.patrolTarget = {
                             x: 50 + Math.random() * (WIDTH - 100),
@@ -463,7 +1346,6 @@
                     enemy.y += Math.sin(angle) * enemy.speed;
                 }
 
-                // Keep in bounds
                 enemy.x = Math.max(enemy.size, Math.min(WIDTH - enemy.size, enemy.x));
                 enemy.y = Math.max(enemy.size, Math.min(HEIGHT - enemy.size, enemy.y));
 
@@ -471,27 +1353,35 @@
                 if (enemy.attackTimer > 0) enemy.attackTimer--;
                 if (enemy.state === 'chase' && distToPlayer < enemy.attackRange + player.size && enemy.attackTimer <= 0) {
                     if (player.invulnerable <= 0) {
-                        const damage = enemy.attack + Math.floor(Math.random() * 3);
-                        player.hp -= damage;
-                        player.invulnerable = 30;
+                        let damage = enemy.attack + Math.floor(Math.random() * 3);
 
-                        damageNumbers.push({
-                            x: player.x,
-                            y: player.y - player.size,
-                            value: damage,
-                            color: '#e74c3c',
-                            life: 60
-                        });
+                        // Shield absorbs damage
+                        if (player.shield > 0) {
+                            const absorbed = Math.min(player.shield, damage);
+                            player.shield -= absorbed;
+                            damage -= absorbed;
+                        }
 
-                        // Knockback player
-                        const knockAngle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
-                        player.x += Math.cos(knockAngle) * 10;
-                        player.y += Math.sin(knockAngle) * 10;
+                        if (damage > 0) {
+                            player.hp -= damage;
+                            player.invulnerable = 30;
+
+                            damageNumbers.push({
+                                x: player.x,
+                                y: player.y - player.size,
+                                value: damage,
+                                color: '#e74c3c',
+                                life: 60
+                            });
+
+                            const knockAngle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+                            player.x += Math.cos(knockAngle) * 10;
+                            player.y += Math.sin(knockAngle) * 10;
+                        }
                     }
                     enemy.attackTimer = enemy.attackCooldown;
                 }
 
-                // Hit flash decay
                 if (enemy.hitFlash > 0) enemy.hitFlash--;
 
                 // Check death
@@ -499,12 +1389,10 @@
                     enemiesDefeated++;
                     player.xp += enemy.xp;
 
-                    // Check level up
                     while (player.xp >= player.xpToLevel) {
                         levelUp();
                     }
 
-                    // Drop loot (30% chance)
                     if (Math.random() < 0.3) {
                         const types = Object.keys(lootTypes);
                         const type = types[Math.floor(Math.random() * types.length)];
@@ -516,7 +1404,6 @@
                         });
                     }
 
-                    // Death particles
                     for (let i = 0; i < 10; i++) {
                         particles.push({
                             x: enemy.x,
@@ -530,13 +1417,14 @@
 
                     enemies.splice(idx, 1);
                 }
-            });
+            }
 
             // Check player death
             if (player.hp <= 0) {
                 gameOver = true;
+                stopMusic();
                 document.getElementById('deathStats').textContent =
-                    `Level ${player.level} | Enemies Defeated: ${enemiesDefeated}`;
+                    `${classes[selectedClass].name} | Level ${player.level} | Enemies Defeated: ${enemiesDefeated}`;
                 document.getElementById('deathScreen').style.display = 'flex';
             }
 
@@ -573,7 +1461,7 @@
             });
 
             // Update UI
-            document.getElementById('hpDisplay').textContent = `HP: ${Math.max(0, player.hp)}/${player.maxHp}`;
+            document.getElementById('hpDisplay').textContent = `HP: ${Math.max(0, player.hp)}/${player.maxHp}${player.shield > 0 ? ` (+${player.shield})` : ''}`;
             document.getElementById('levelDisplay').textContent = `Level: ${player.level}`;
             document.getElementById('xpDisplay').textContent = `XP: ${player.xp}/${player.xpToLevel}`;
             document.getElementById('statsDisplay').textContent = `ATK: ${player.attack} | SPD: ${player.speed.toFixed(1)}`;
@@ -603,28 +1491,24 @@
             // Draw walls
             ctx.fillStyle = '#1a1a2e';
             const wallSize = 15;
-            ctx.fillRect(0, 0, WIDTH, wallSize); // Top
-            ctx.fillRect(0, HEIGHT - wallSize, WIDTH, wallSize); // Bottom
-            ctx.fillRect(0, 0, wallSize, HEIGHT); // Left
-            ctx.fillRect(WIDTH - wallSize, 0, wallSize, HEIGHT); // Right
+            ctx.fillRect(0, 0, WIDTH, wallSize);
+            ctx.fillRect(0, HEIGHT - wallSize, WIDTH, wallSize);
+            ctx.fillRect(0, 0, wallSize, HEIGHT);
+            ctx.fillRect(WIDTH - wallSize, 0, wallSize, HEIGHT);
 
             // Draw doorways
             const room = rooms[currentRoom];
             ctx.fillStyle = '#4a4a6a';
 
-            // Right door
             if (room.connections.some(r => rooms[r].x > room.x)) {
                 ctx.fillRect(WIDTH - wallSize, HEIGHT/2 - DOOR_SIZE/2, wallSize, DOOR_SIZE);
             }
-            // Left door
             if (room.connections.some(r => rooms[r].x < room.x)) {
                 ctx.fillRect(0, HEIGHT/2 - DOOR_SIZE/2, wallSize, DOOR_SIZE);
             }
-            // Bottom door
             if (room.connections.some(r => rooms[r].y > room.y)) {
                 ctx.fillRect(WIDTH/2 - DOOR_SIZE/2, HEIGHT - wallSize, DOOR_SIZE, wallSize);
             }
-            // Top door
             if (room.connections.some(r => rooms[r].y < room.y)) {
                 ctx.fillRect(WIDTH/2 - DOOR_SIZE/2, 0, DOOR_SIZE, wallSize);
             }
@@ -651,15 +1535,59 @@
                 ctx.fillText(item.symbol, item.x, item.y);
             });
 
+            // Draw projectiles
+            projectiles.forEach(proj => {
+                ctx.fillStyle = proj.color;
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, proj.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Trail
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath();
+                ctx.arc(proj.x - proj.vx * 0.5, proj.y - proj.vy * 0.5, proj.size * 0.7, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            });
+
+            // Draw minions
+            minions.forEach(minion => {
+                ctx.fillStyle = minion.color;
+                ctx.beginPath();
+                ctx.arc(minion.x, minion.y, minion.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Skeleton face
+                ctx.fillStyle = '#2c3e50';
+                ctx.beginPath();
+                ctx.arc(minion.x - 4, minion.y - 2, 3, 0, Math.PI * 2);
+                ctx.arc(minion.x + 4, minion.y - 2, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // HP bar
+                const hpBarWidth = minion.size * 1.5;
+                const hpPercent = minion.hp / minion.maxHp;
+                ctx.fillStyle = '#333';
+                ctx.fillRect(minion.x - hpBarWidth/2, minion.y - minion.size - 8, hpBarWidth, 4);
+                ctx.fillStyle = '#9b59b6';
+                ctx.fillRect(minion.x - hpBarWidth/2, minion.y - minion.size - 8, hpBarWidth * hpPercent, 4);
+            });
+
             // Draw enemies
             enemies.forEach(enemy => {
-                // Body
                 ctx.fillStyle = enemy.hitFlash > 0 ? '#fff' : enemy.color;
+
+                // Stunned visual
+                if (enemy.stunned > 0) {
+                    ctx.globalAlpha = 0.6;
+                }
+
                 ctx.beginPath();
                 ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.globalAlpha = 1;
 
-                // Eye direction (toward player or patrol target)
+                // Eye
                 const targetX = enemy.state === 'chase' ? player.x : enemy.patrolTarget.x;
                 const targetY = enemy.state === 'chase' ? player.y : enemy.patrolTarget.y;
                 const eyeAngle = Math.atan2(targetY - enemy.y, targetX - enemy.x);
@@ -683,6 +1611,14 @@
                 );
                 ctx.fill();
 
+                // Stun stars
+                if (enemy.stunned > 0) {
+                    ctx.fillStyle = '#f1c40f';
+                    ctx.font = '12px Arial';
+                    ctx.fillText('*', enemy.x - enemy.size, enemy.y - enemy.size);
+                    ctx.fillText('*', enemy.x + enemy.size, enemy.y - enemy.size);
+                }
+
                 // HP bar
                 const hpBarWidth = enemy.size * 2;
                 const hpPercent = enemy.hp / enemy.maxHp;
@@ -693,68 +1629,88 @@
             });
 
             // Draw player
-            const playerAlpha = player.invulnerable > 0 && Math.floor(player.invulnerable / 3) % 2 ? 0.5 : 1;
-            ctx.globalAlpha = playerAlpha;
+            if (gameStarted) {
+                const playerAlpha = player.invulnerable > 0 && Math.floor(player.invulnerable / 3) % 2 ? 0.5 : 1;
+                ctx.globalAlpha = playerAlpha;
 
-            // Player body
-            ctx.fillStyle = player.color;
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
-            ctx.fill();
+                // Shield effect
+                if (player.shield > 0) {
+                    ctx.strokeStyle = 'rgba(231, 76, 60, 0.5)';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y, player.size + 8, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
 
-            // Player face direction
-            const faceAngle = Math.atan2(mouseY - player.y, mouseX - player.x);
-            const faceDist = player.size * 0.4;
+                // Healing aura effect
+                if (player.healingAura) {
+                    ctx.strokeStyle = 'rgba(46, 204, 113, 0.2)';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y, player.size + 15, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
 
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(
-                player.x + Math.cos(faceAngle) * faceDist,
-                player.y + Math.sin(faceAngle) * faceDist,
-                player.size * 0.35, 0, Math.PI * 2
-            );
-            ctx.fill();
-
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(
-                player.x + Math.cos(faceAngle) * (faceDist + 3),
-                player.y + Math.sin(faceAngle) * (faceDist + 3),
-                player.size * 0.15, 0, Math.PI * 2
-            );
-            ctx.fill();
-
-            ctx.globalAlpha = 1;
-
-            // Draw attack arc
-            if (player.isAttacking) {
-                const progress = 1 - (player.attackTimer / player.attackDuration);
-                const arcAlpha = 0.6 * (1 - progress);
-
-                ctx.strokeStyle = `rgba(255, 255, 255, ${arcAlpha})`;
-                ctx.fillStyle = `rgba(255, 255, 255, ${arcAlpha * 0.3})`;
-                ctx.lineWidth = 3;
-
+                // Player body
+                ctx.fillStyle = player.color;
                 ctx.beginPath();
-                ctx.moveTo(player.x, player.y);
-                ctx.arc(
-                    player.x, player.y,
-                    player.attackRange,
-                    player.attackAngle - player.attackArc/2,
-                    player.attackAngle + player.attackArc/2
-                );
-                ctx.closePath();
+                ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.stroke();
-            }
 
-            // Player HP bar
-            const playerHpWidth = 50;
-            const playerHpPercent = player.hp / player.maxHp;
-            ctx.fillStyle = '#333';
-            ctx.fillRect(player.x - playerHpWidth/2, player.y - player.size - 15, playerHpWidth, 8);
-            ctx.fillStyle = playerHpPercent > 0.5 ? '#2ecc71' : playerHpPercent > 0.25 ? '#f1c40f' : '#e74c3c';
-            ctx.fillRect(player.x - playerHpWidth/2, player.y - player.size - 15, playerHpWidth * playerHpPercent, 8);
+                // Player face
+                const faceAngle = Math.atan2(mouseY - player.y, mouseX - player.x);
+                const faceDist = player.size * 0.4;
+
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(
+                    player.x + Math.cos(faceAngle) * faceDist,
+                    player.y + Math.sin(faceAngle) * faceDist,
+                    player.size * 0.35, 0, Math.PI * 2
+                );
+                ctx.fill();
+
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(
+                    player.x + Math.cos(faceAngle) * (faceDist + 3),
+                    player.y + Math.sin(faceAngle) * (faceDist + 3),
+                    player.size * 0.15, 0, Math.PI * 2
+                );
+                ctx.fill();
+
+                ctx.globalAlpha = 1;
+
+                // Attack arc (melee only)
+                if (player.isAttacking && !player.isRanged) {
+                    const progress = 1 - (player.attackTimer / player.attackDuration);
+                    const arcAlpha = 0.6 * (1 - progress);
+
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${arcAlpha})`;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${arcAlpha * 0.3})`;
+                    ctx.lineWidth = 3;
+
+                    ctx.beginPath();
+                    ctx.moveTo(player.x, player.y);
+                    ctx.arc(
+                        player.x, player.y,
+                        player.attackRange,
+                        player.attackAngle - player.attackArc/2,
+                        player.attackAngle + player.attackArc/2
+                    );
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                // Player HP bar
+                const playerHpWidth = 50;
+                const playerHpPercent = player.hp / player.maxHp;
+                ctx.fillStyle = '#333';
+                ctx.fillRect(player.x - playerHpWidth/2, player.y - player.size - 15, playerHpWidth, 8);
+                ctx.fillStyle = playerHpPercent > 0.5 ? '#2ecc71' : playerHpPercent > 0.25 ? '#f1c40f' : '#e74c3c';
+                ctx.fillRect(player.x - playerHpWidth/2, player.y - player.size - 15, playerHpWidth * playerHpPercent, 8);
+            }
 
             // Draw damage numbers
             damageNumbers.forEach(dn => {
@@ -779,10 +1735,9 @@
                 const rx = mmX + r.x * (roomSize + 10);
                 const ry = mmY + r.y * (roomSize + 10);
 
-                ctx.fillStyle = idx === currentRoom ? '#3498db' : '#555';
+                ctx.fillStyle = idx === currentRoom ? player.color : '#555';
                 ctx.fillRect(rx, ry, roomSize, roomSize);
 
-                // Draw connections
                 ctx.strokeStyle = '#888';
                 ctx.lineWidth = 3;
                 r.connections.forEach(connIdx => {
@@ -797,14 +1752,23 @@
             });
 
             // Player dot on minimap
-            const currentRoomData = rooms[currentRoom];
-            const mmPlayerX = mmX + currentRoomData.x * (roomSize + 10) + (player.x / WIDTH) * roomSize;
-            const mmPlayerY = mmY + currentRoomData.y * (roomSize + 10) + (player.y / HEIGHT) * roomSize;
+            if (gameStarted) {
+                const currentRoomData = rooms[currentRoom];
+                const mmPlayerX = mmX + currentRoomData.x * (roomSize + 10) + (player.x / WIDTH) * roomSize;
+                const mmPlayerY = mmY + currentRoomData.y * (roomSize + 10) + (player.y / HEIGHT) * roomSize;
 
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(mmPlayerX, mmPlayerY, 3, 0, Math.PI * 2);
-            ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(mmPlayerX, mmPlayerY, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Room name
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            const roomNames = ['Starting Chamber', 'Eastern Hall', 'Southern Depths', 'Boss Arena'];
+            ctx.fillText(roomNames[currentRoom], WIDTH/2, 30);
         }
 
         function gameLoop() {
@@ -813,8 +1777,7 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Start game
-        spawnEnemies();
+        // Start game loop
         gameLoop();
     </script>
 </body>
